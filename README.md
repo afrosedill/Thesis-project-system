@@ -1,139 +1,188 @@
-# [Bootstrap](http://getbootstrap.com)
-
-[![Slack](https://bootstrap-slack.herokuapp.com/badge.svg)](https://bootstrap-slack.herokuapp.com)
-![Bower version](https://img.shields.io/bower/v/bootstrap.svg)
-[![npm version](https://img.shields.io/npm/v/bootstrap.svg)](https://www.npmjs.com/package/bootstrap)
-[![Build Status](https://img.shields.io/travis/twbs/bootstrap/master.svg)](https://travis-ci.org/twbs/bootstrap)
-[![devDependency Status](https://img.shields.io/david/dev/twbs/bootstrap.svg)](https://david-dm.org/twbs/bootstrap#info=devDependencies)
-[![NuGet](https://img.shields.io/nuget/v/bootstrap.svg)](https://www.nuget.org/packages/Bootstrap)
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bootstrap.svg)](https://saucelabs.com/u/bootstrap)
-
-Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web development, created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thornton](https://twitter.com/fat), and maintained by the [core team](https://github.com/orgs/twbs/people) with the massive support and involvement of the community.
-
-To get started, check out <http://getbootstrap.com>!
+[![build status](https://secure.travis-ci.org/twitter/typeahead.js.svg?branch=master)](http://travis-ci.org/twitter/typeahead.js)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 
-## Table of contents
+[typeahead.js][gh-page]
+=======================
 
-* [Quick start](#quick-start)
-* [Bugs and feature requests](#bugs-and-feature-requests)
-* [Documentation](#documentation)
-* [Contributing](#contributing)
-* [Community](#community)
-* [Versioning](#versioning)
-* [Creators](#creators)
-* [Copyright and license](#copyright-and-license)
+Inspired by [twitter.com]'s autocomplete search functionality, typeahead.js is 
+a flexible JavaScript library that provides a strong foundation for building 
+robust typeaheads.
 
+The typeahead.js library consists of 2 components: the suggestion engine, 
+[Bloodhound], and the UI view, [Typeahead]. 
+The suggestion engine is responsible for computing suggestions for a given 
+query. The UI view is responsible for rendering suggestions and handling DOM 
+interactions. Both components can be used separately, but when used together, 
+they can provide a rich typeahead experience.
 
-## Quick start
+<!-- section links -->
 
-Several quick start options are available:
+[gh-page]: http://twitter.github.io/typeahead.js/
+[twitter.com]: https://twitter.com
+[Bloodhound]: https://github.com/twitter/typeahead.js/blob/master/doc/bloodhound.md
+[Typeahead]: https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md
 
-* [Download the latest release](https://github.com/twbs/bootstrap/archive/v3.3.6.zip).
-* Clone the repo: `git clone https://github.com/twbs/bootstrap.git`.
-* Install with [Bower](http://bower.io): `bower install bootstrap`.
-* Install with [npm](https://www.npmjs.com): `npm install bootstrap`.
-* Install with [Meteor](https://www.meteor.com): `meteor add twbs:bootstrap`.
-* Install with [Composer](https://getcomposer.org): `composer require twbs/bootstrap`.
+Getting Started
+---------------
 
-Read the [Getting started page](http://getbootstrap.com/getting-started/) for information on the framework contents, templates and examples, and more.
+How you acquire typeahead.js is up to you.
 
-### What's included
+Preferred method:
+* Install with [Bower]: `$ bower install typeahead.js`
 
-Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
+Other methods:
+* [Download zipball of latest release][zipball].
+* Download the latest dist files individually:
+  * *[bloodhound.js]* (standalone suggestion engine)
+  * *[typeahead.jquery.js]* (standalone UI view)
+  * *[typeahead.bundle.js]* (*bloodhound.js* + *typeahead.jquery.js*)
+  * *[typeahead.bundle.min.js]*
 
-```
-bootstrap/
-├── css/
-│   ├── bootstrap.css
-│   ├── bootstrap.css.map
-│   ├── bootstrap.min.css
-│   ├── bootstrap.min.css.map
-│   ├── bootstrap-theme.css
-│   ├── bootstrap-theme.css.map
-│   ├── bootstrap-theme.min.css
-│   └── bootstrap-theme.min.css.map
-├── js/
-│   ├── bootstrap.js
-│   └── bootstrap.min.js
-└── fonts/
-    ├── glyphicons-halflings-regular.eot
-    ├── glyphicons-halflings-regular.svg
-    ├── glyphicons-halflings-regular.ttf
-    ├── glyphicons-halflings-regular.woff
-    └── glyphicons-halflings-regular.woff2
-```
+**Note:** both *bloodhound.js* and *typeahead.jquery.js* have a dependency on 
+[jQuery] 1.9+.
 
-We provide compiled CSS and JS (`bootstrap.*`), as well as compiled and minified CSS and JS (`bootstrap.min.*`). CSS [source maps](https://developer.chrome.com/devtools/docs/css-preprocessors) (`bootstrap.*.map`) are available for use with certain browsers' developer tools. Fonts from Glyphicons are included, as is the optional Bootstrap theme.
+<!-- section links -->
 
+[Bower]: http://bower.io/
+[zipball]: http://twitter.github.com/typeahead.js/releases/latest/typeahead.js.zip
+[bloodhound.js]: http://twitter.github.com/typeahead.js/releases/latest/bloodhound.js
+[typeahead.jquery.js]: http://twitter.github.com/typeahead.js/releases/latest/typeahead.jquery.js
+[typeahead.bundle.js]: http://twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.js
+[typeahead.bundle.min.js]: http://twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.min.js
+[jQuery]: http://jquery.com/
 
-## Bugs and feature requests
+Documentation 
+-------------
 
-Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/twbs/bootstrap/blob/master/CONTRIBUTING.md#using-the-issue-tracker) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/twbs/bootstrap/issues/new).
+* [Typeahead Docs]
+* [Bloodhound Docs]
 
+[Typeahead Docs]: https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md
+[Bloodhound Docs]: https://github.com/twitter/typeahead.js/blob/master/doc/bloodhound.md
 
-## Documentation
+Examples
+--------
 
-Bootstrap's documentation, included in this repo in the root directory, is built with [Jekyll](http://jekyllrb.com) and publicly hosted on GitHub Pages at <http://getbootstrap.com>. The docs may also be run locally.
+For some working examples of typeahead.js, visit the [examples page].
 
-### Running documentation locally
+<!-- section links -->
 
-1. If necessary, [install Jekyll](http://jekyllrb.com/docs/installation) (requires v3.0.x).
-   **Note for Windows users:** Read [this unofficial guide](http://jekyll-windows.juthilo.com/) to get Jekyll up and running without problems.
-2. Install the Ruby-based syntax highlighter, [Rouge](https://github.com/jneen/rouge), with `gem install rouge`.
-3. From the root `/bootstrap` directory, run `jekyll serve` in the command line.
-4. Open `http://localhost:9001` in your browser, and voilà.
+[examples page]: http://twitter.github.io/typeahead.js/examples
 
-Learn more about using Jekyll by reading its [documentation](http://jekyllrb.com/docs/home/).
+Browser Support
+---------------
 
-### Documentation for previous releases
+* Chrome
+* Firefox 3.5+
+* Safari 4+
+* Internet Explorer 8+
+* Opera 11+
 
-Documentation for v2.3.2 has been made available for the time being at <http://getbootstrap.com/2.3.2/> while folks transition to Bootstrap 3.
+**NOTE:** typeahead.js is not tested on mobile browsers.
 
-[Previous releases](https://github.com/twbs/bootstrap/releases) and their documentation are also available for download.
+Customer Support
+----------------
 
+For general questions about typeahead.js, tweet at [@typeahead].
 
-## Contributing
+For technical questions, you should post a question on [Stack Overflow] and tag 
+it with [typeahead.js][so tag].
 
-Please read through our [contributing guidelines](https://github.com/twbs/bootstrap/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+<!-- section links -->
 
-Moreover, if your pull request contains JavaScript patches or features, you must include [relevant unit tests](https://github.com/twbs/bootstrap/tree/master/js/tests). All HTML and CSS should conform to the [Code Guide](https://github.com/mdo/code-guide), maintained by [Mark Otto](https://github.com/mdo).
+[Stack Overflow]: http://stackoverflow.com/
+[@typeahead]: https://twitter.com/typeahead
+[so tag]: http://stackoverflow.com/questions/tagged/typeahead.js
 
-Editor preferences are available in the [editor config](https://github.com/twbs/bootstrap/blob/master/.editorconfig) for easy use in common text editors. Read more and download plugins at <http://editorconfig.org>.
+Issues
+------
 
+Discovered a bug? Please create an issue here on GitHub!
 
-## Community
+https://github.com/twitter/typeahead.js/issues
 
-Get updates on Bootstrap's development and chat with the project maintainers and community members.
+Versioning
+----------
 
-* Follow [@getbootstrap on Twitter](https://twitter.com/getbootstrap).
-* Read and subscribe to [The Official Bootstrap Blog](http://blog.getbootstrap.com).
-* Join [the official Slack room](https://bootstrap-slack.herokuapp.com).
-* Chat with fellow Bootstrappers in IRC. On the `irc.freenode.net` server, in the `##bootstrap` channel.
-* Implementation help may be found at Stack Overflow (tagged [`twitter-bootstrap-3`](https://stackoverflow.com/questions/tagged/twitter-bootstrap-3)).
-* Developers should use the keyword `bootstrap` on packages which modify or add to the functionality of Bootstrap when distributing through [npm](https://www.npmjs.com/browse/keyword/bootstrap) or similar delivery mechanisms for maximum discoverability.
+For transparency and insight into our release cycle, releases will be numbered 
+with the following format:
 
+`<major>.<minor>.<patch>`
 
-## Versioning
+And constructed with the following guidelines:
 
-For transparency into our release cycle and in striving to maintain backward compatibility, Bootstrap is maintained under [the Semantic Versioning guidelines](http://semver.org/). Sometimes we screw up, but we'll adhere to those rules whenever possible.
+* Breaking backwards compatibility bumps the major
+* New additions without breaking backwards compatibility bumps the minor
+* Bug fixes and misc changes bump the patch
 
-See [the Releases section of our GitHub project](https://github.com/twbs/bootstrap/releases) for changelogs for each release version of Bootstrap. Release announcement posts on [the official Bootstrap blog](http://blog.getbootstrap.com) contain summaries of the most noteworthy changes made in each release.
+For more information on semantic versioning, please visit http://semver.org/.
 
+Testing
+-------
 
-## Creators
+Tests are written using [Jasmine] and ran with [Karma]. To run
+the test suite with PhantomJS, run `$ npm test`.
 
-**Mark Otto**
+<!-- section links -->
 
-* <https://twitter.com/mdo>
-* <https://github.com/mdo>
+[Jasmine]: http://jasmine.github.io/
+[Karma]: http://karma-runner.github.io/
 
-**Jacob Thornton**
+Developers
+----------
 
-* <https://twitter.com/fat>
-* <https://github.com/fat>
+If you plan on contributing to typeahead.js, be sure to read the 
+[contributing guidelines]. A good starting place for new contributors are issues
+labeled with [entry-level]. Entry-level issues tend to require minor changes 
+and provide developers a chance to get more familiar with typeahead.js before
+taking on more challenging work.
 
+In order to build and test typeahead.js, you'll need to install its dev 
+dependencies (`$ npm install`) and have [grunt-cli] 
+installed (`$ npm install -g grunt-cli`). Below is an overview of the available 
+Grunt tasks that'll be useful in development.
 
-## Copyright and license
+* `grunt build` – Builds *typeahead.js* from source.
+* `grunt lint` – Runs source and test files through JSHint.
+* `grunt watch` – Rebuilds *typeahead.js* whenever a source file is modified.
+* `grunt server` – Serves files from the root of typeahead.js on localhost:8888. 
+  Useful for using *test/playground.html* for debugging/testing.
+* `grunt dev` – Runs `grunt watch` and `grunt server` in parallel.
 
-Code and documentation copyright 2011-2015 Twitter, Inc. Code released under [the MIT license](https://github.com/twbs/bootstrap/blob/master/LICENSE). Docs released under [Creative Commons](https://github.com/twbs/bootstrap/blob/master/docs/LICENSE).
+<!-- section links -->
+
+[contributing guidelines]: https://github.com/twitter/typeahead.js/blob/master/CONTRIBUTING.md
+[entry-level]: https://github.com/twitter/typeahead.js/issues?&labels=entry-level&state=open
+[grunt-cli]: https://github.com/gruntjs/grunt-cli
+
+Maintainers
+-----------
+
+* **Jake Harding** 
+  * [@JakeHarding](https://twitter.com/JakeHarding) 
+  * [GitHub](https://github.com/jharding)
+
+* **You?**
+
+Authors
+-------
+
+* **Jake Harding** 
+  * [@JakeHarding](https://twitter.com/JakeHarding) 
+  * [GitHub](https://github.com/jharding)
+
+* **Veljko Skarich**
+  * [@vskarich](https://twitter.com/vskarich) 
+  * [GitHub](https://github.com/vskarich)
+
+* **Tim Trueman**
+  * [@timtrueman](https://twitter.com/timtrueman) 
+  * [GitHub](https://github.com/timtrueman)
+
+License
+-------
+
+Copyright 2013 Twitter, Inc.
+
+Licensed under the MIT License

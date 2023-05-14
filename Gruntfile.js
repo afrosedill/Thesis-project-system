@@ -1,533 +1,330 @@
-/*!
- * Bootstrap's Gruntfile
- * http://getbootstrap.com
- * Copyright 2013-2015 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+var semver = require('semver'),
+    f = require('util').format,
+    files = {
+      common: [
+      'src/common/utils.js'
+      ],
+      bloodhound: [
+      'src/bloodhound/version.js',
+      'src/bloodhound/tokenizers.js',
+      'src/bloodhound/lru_cache.js',
+      'src/bloodhound/persistent_storage.js',
+      'src/bloodhound/transport.js',
+      'src/bloodhound/search_index.js',
+      'src/bloodhound/prefetch.js',
+      'src/bloodhound/remote.js',
+      'src/bloodhound/options_parser.js',
+      'src/bloodhound/bloodhound.js'
+      ],
+      typeahead: [
+      'src/typeahead/www.js',
+      'src/typeahead/event_bus.js',
+      'src/typeahead/event_emitter.js',
+      'src/typeahead/highlight.js',
+      'src/typeahead/input.js',
+      'src/typeahead/dataset.js',
+      'src/typeahead/menu.js',
+      'src/typeahead/default_menu.js',
+      'src/typeahead/typeahead.js',
+      'src/typeahead/plugin.js'
+      ]
+    };
 
-module.exports = function (grunt) {
-  'use strict';
-
-  // Force use of Unix newlines
-  grunt.util.linefeed = '\n';
-
-  RegExp.quote = function (string) {
-    return string.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
-  };
-
-  var fs = require('fs');
-  var path = require('path');
-  var npmShrinkwrap = require('npm-shrinkwrap');
-  var generateGlyphiconsData = require('./grunt/bs-glyphicons-data-generator.js');
-  var BsLessdocParser = require('./grunt/bs-lessdoc-parser.js');
-  var getLessVarsData = function () {
-    var filePath = path.join(__dirname, 'less/variables.less');
-    var fileContent = fs.readFileSync(filePath, { encoding: 'utf8' });
-    var parser = new BsLessdocParser(fileContent);
-    return { sections: parser.parseFile() };
-  };
-  var generateRawFiles = require('./grunt/bs-raw-files-generator.js');
-  var generateCommonJSModule = require('./grunt/bs-commonjs-generator.js');
-  var configBridge = grunt.file.readJSON('./grunt/configBridge.json', { encoding: 'utf8' });
-
-  Object.keys(configBridge.paths).forEach(function (key) {
-    configBridge.paths[key].forEach(function (val, i, arr) {
-      arr[i] = path.join('./docs/assets', val);
-    });
-  });
-
-  // Project configuration.
+module.exports = function(grunt) {
   grunt.initConfig({
+    version: grunt.file.readJSON('package.json').version,
 
-    // Metadata.
-    pkg: grunt.file.readJSON('package.json'),
-    banner: '/*!\n' +
-            ' * Bootstrap v<%= pkg.version %> (<%= pkg.homepage %>)\n' +
-            ' * Copyright 2011-<%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-            ' * Licensed under the <%= pkg.license %> license\n' +
-            ' */\n',
-    jqueryCheck: configBridge.config.jqueryCheck.join('\n'),
-    jqueryVersionCheck: configBridge.config.jqueryVersionCheck.join('\n'),
+    tempDir: 'dist_temp',
+    buildDir: 'dist',
 
-    // Task configuration.
-    clean: {
-      dist: 'dist',
-      docs: 'docs/dist'
-    },
-
-    jshint: {
-      options: {
-        jshintrc: 'js/.jshintrc'
-      },
-      grunt: {
-        options: {
-          jshintrc: 'grunt/.jshintrc'
-        },
-        src: ['Gruntfile.js', 'package.js', 'grunt/*.js']
-      },
-      core: {
-        src: 'js/*.js'
-      },
-      test: {
-        options: {
-          jshintrc: 'js/tests/unit/.jshintrc'
-        },
-        src: 'js/tests/unit/*.js'
-      },
-      assets: {
-        src: ['docs/assets/js/src/*.js', 'docs/assets/js/*.js', '!docs/assets/js/*.min.js']
-      }
-    },
-
-    jscs: {
-      options: {
-        config: 'js/.jscsrc'
-      },
-      grunt: {
-        src: '<%= jshint.grunt.src %>'
-      },
-      core: {
-        src: '<%= jshint.core.src %>'
-      },
-      test: {
-        src: '<%= jshint.test.src %>'
-      },
-      assets: {
-        options: {
-          requireCamelCaseOrUpperCaseIdentifiers: null
-        },
-        src: '<%= jshint.assets.src %>'
-      }
-    },
-
-    concat: {
-      options: {
-        banner: '<%= banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
-        stripBanners: false
-      },
-      bootstrap: {
-        src: [
-          'js/transition.js',
-          'js/alert.js',
-          'js/button.js',
-          'js/carousel.js',
-          'js/collapse.js',
-          'js/dropdown.js',
-          'js/modal.js',
-          'js/tooltip.js',
-          'js/popover.js',
-          'js/scrollspy.js',
-          'js/tab.js',
-          'js/affix.js'
-        ],
-        dest: 'dist/js/<%= pkg.name %>.js'
-      }
-    },
+    banner: [
+      '/*!',
+      ' * typeahead.js <%= version %>',
+      ' * https://github.com/twitter/typeahead.js',
+      ' * Copyright 2013-<%= grunt.template.today("yyyy") %> Twitter, Inc. and other contributors; Licensed MIT',
+      ' */\n\n'
+    ].join('\n'),
 
     uglify: {
       options: {
-        compress: {
-          warnings: false
-        },
-        mangle: true,
-        preserveComments: 'some'
+        banner: '<%= banner %>'
       },
-      core: {
-        src: '<%= concat.bootstrap.dest %>',
-        dest: 'dist/js/<%= pkg.name %>.min.js'
-      },
-      customize: {
-        src: configBridge.paths.customizerJs,
-        dest: 'docs/assets/js/customize.min.js'
-      },
-      docsJs: {
-        src: configBridge.paths.docsJs,
-        dest: 'docs/assets/js/docs.min.js'
-      }
-    },
 
-    qunit: {
-      options: {
-        inject: 'js/tests/unit/phantom.js'
+      concatBloodhound: {
+        options: {
+          mangle: false,
+          beautify: true,
+          compress: false,
+          banner: ''
+        },
+        src: files.common.concat(files.bloodhound),
+        dest: '<%= tempDir %>/bloodhound.js'
       },
-      files: 'js/tests/index.html'
-    },
+      concatTypeahead: {
+        options: {
+          mangle: false,
+          beautify: true,
+          compress: false,
+          banner: ''
+        },
+        src: files.common.concat(files.typeahead),
+        dest: '<%= tempDir %>/typeahead.jquery.js'
+      },
 
-    less: {
-      compileCore: {
+      bloodhound: {
         options: {
-          strictMath: true,
-          sourceMap: true,
-          outputSourceFiles: true,
-          sourceMapURL: '<%= pkg.name %>.css.map',
-          sourceMapFilename: 'dist/css/<%= pkg.name %>.css.map'
+          mangle: false,
+          beautify: true,
+          compress: false
         },
-        src: 'less/bootstrap.less',
-        dest: 'dist/css/<%= pkg.name %>.css'
+        src: '<%= tempDir %>/bloodhound.js',
+        dest: '<%= buildDir %>/bloodhound.js'
       },
-      compileTheme: {
+      bloodhoundMin: {
         options: {
-          strictMath: true,
-          sourceMap: true,
-          outputSourceFiles: true,
-          sourceMapURL: '<%= pkg.name %>-theme.css.map',
-          sourceMapFilename: 'dist/css/<%= pkg.name %>-theme.css.map'
+          mangle: true,
+          compress: {}
         },
-        src: 'less/theme.less',
-        dest: 'dist/css/<%= pkg.name %>-theme.css'
-      }
-    },
-
-    autoprefixer: {
-      options: {
-        browsers: configBridge.config.autoprefixerBrowsers
+        src: '<%= tempDir %>/bloodhound.js',
+        dest: '<%= buildDir %>/bloodhound.min.js'
       },
-      core: {
+      typeahead: {
         options: {
-          map: true
+          mangle: false,
+          beautify: true,
+          compress: false
         },
-        src: 'dist/css/<%= pkg.name %>.css'
+        src: '<%= tempDir %>/typeahead.jquery.js',
+        dest: '<%= buildDir %>/typeahead.jquery.js'
       },
-      theme: {
+      typeaheadMin: {
         options: {
-          map: true
+          mangle: true,
+          compress: {}
         },
-        src: 'dist/css/<%= pkg.name %>-theme.css'
+        src: '<%= tempDir %>/typeahead.jquery.js',
+        dest: '<%= buildDir %>/typeahead.jquery.min.js'
       },
-      docs: {
-        src: ['docs/assets/css/src/docs.css']
-      },
-      examples: {
-        expand: true,
-        cwd: 'docs/examples/',
-        src: ['**/*.css'],
-        dest: 'docs/examples/'
-      }
-    },
-
-    csslint: {
-      options: {
-        csslintrc: 'less/.csslintrc'
-      },
-      dist: [
-        'dist/css/bootstrap.css',
-        'dist/css/bootstrap-theme.css'
-      ],
-      examples: [
-        'docs/examples/**/*.css'
-      ],
-      docs: {
+      bundle: {
         options: {
-          ids: false,
-          'overqualified-elements': false
+          mangle: false,
+          beautify: true,
+          compress: false
         },
-        src: 'docs/assets/css/src/docs.css'
-      }
-    },
-
-    cssmin: {
-      options: {
-        // TODO: disable `zeroUnits` optimization once clean-css 3.2 is released
-        //    and then simplify the fix for https://github.com/twbs/bootstrap/issues/14837 accordingly
-        compatibility: 'ie8',
-        keepSpecialComments: '*',
-        sourceMap: true,
-        advanced: false
-      },
-      minifyCore: {
-        src: 'dist/css/<%= pkg.name %>.css',
-        dest: 'dist/css/<%= pkg.name %>.min.css'
-      },
-      minifyTheme: {
-        src: 'dist/css/<%= pkg.name %>-theme.css',
-        dest: 'dist/css/<%= pkg.name %>-theme.min.css'
-      },
-      docs: {
         src: [
-          'docs/assets/css/ie10-viewport-bug-workaround.css',
-          'docs/assets/css/src/pygments-manni.css',
-          'docs/assets/css/src/docs.css'
+          '<%= tempDir %>/bloodhound.js',
+          '<%= tempDir %>/typeahead.jquery.js'
         ],
-        dest: 'docs/assets/css/docs.min.css'
-      }
-    },
+        dest: '<%= buildDir %>/typeahead.bundle.js'
 
-    csscomb: {
-      options: {
-        config: 'less/.csscomb.json'
       },
-      dist: {
-        expand: true,
-        cwd: 'dist/css/',
-        src: ['*.css', '!*.min.css'],
-        dest: 'dist/css/'
-      },
-      examples: {
-        expand: true,
-        cwd: 'docs/examples/',
-        src: '**/*.css',
-        dest: 'docs/examples/'
-      },
-      docs: {
-        src: 'docs/assets/css/src/docs.css',
-        dest: 'docs/assets/css/src/docs.css'
-      }
-    },
-
-    copy: {
-      fonts: {
-        expand: true,
-        src: 'fonts/*',
-        dest: 'dist/'
-      },
-      docs: {
-        expand: true,
-        cwd: 'dist/',
-        src: [
-          '**/*'
-        ],
-        dest: 'docs/dist/'
-      }
-    },
-
-    connect: {
-      server: {
+      bundleMin: {
         options: {
-          port: 3000,
-          base: '.'
-        }
-      }
-    },
-
-    jekyll: {
-      options: {
-        config: '_config.yml'
-      },
-      docs: {},
-      github: {
-        options: {
-          raw: 'github: true'
-        }
-      }
-    },
-
-    htmlmin: {
-      dist: {
-        options: {
-          collapseWhitespace: true,
-          conservativeCollapse: true,
-          minifyCSS: true,
-          minifyJS: true,
-          removeAttributeQuotes: true,
-          removeComments: true
+          mangle: true,
+          compress: {}
         },
-        expand: true,
-        cwd: '_gh_pages',
-        dest: '_gh_pages',
         src: [
-          '**/*.html',
-          '!examples/**/*.html'
-        ]
+          '<%= tempDir %>/bloodhound.js',
+          '<%= tempDir %>/typeahead.jquery.js'
+        ],
+        dest: '<%= buildDir %>/typeahead.bundle.min.js'
       }
     },
 
-    jade: {
-      options: {
-        pretty: true,
-        data: getLessVarsData
+    umd: {
+      bloodhound: {
+        src: '<%= tempDir %>/bloodhound.js',
+        objectToExport: 'Bloodhound',
+        amdModuleId: 'bloodhound',
+        deps: {
+          default: ['$'],
+          amd: ['jquery'],
+          cjs: ['jquery'],
+          global: ['jQuery']
+        }
       },
-      customizerVars: {
-        src: 'docs/_jade/customizer-variables.jade',
-        dest: 'docs/_includes/customizer-variables.html'
-      },
-      customizerNav: {
-        src: 'docs/_jade/customizer-nav.jade',
-        dest: 'docs/_includes/nav/customize.html'
-      }
-    },
-
-    htmllint: {
-      options: {
-        ignore: [
-          'Attribute "autocomplete" not allowed on element "button" at this point.',
-          'Attribute "autocomplete" is only allowed when the input type is "color", "date", "datetime", "datetime-local", "email", "month", "number", "password", "range", "search", "tel", "text", "time", "url", or "week".',
-          'Element "img" is missing required attribute "src".'
-        ]
-      },
-      src: '_gh_pages/**/*.html'
-    },
-
-    watch: {
-      src: {
-        files: '<%= jshint.core.src %>',
-        tasks: ['jshint:core', 'qunit', 'concat']
-      },
-      test: {
-        files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'qunit']
-      },
-      less: {
-        files: 'less/**/*.less',
-        tasks: 'less'
+      typeahead: {
+        src: '<%= tempDir %>/typeahead.jquery.js',
+        amdModuleId: 'typeahead.js',
+        deps: {
+          default: ['$'],
+          amd: ['jquery'],
+          cjs: ['jquery'],
+          global: ['jQuery']
+        }
       }
     },
 
     sed: {
-      versionNumber: {
-        pattern: (function () {
-          var old = grunt.option('oldver');
-          return old ? RegExp.quote(old) : old;
-        })(),
-        replacement: grunt.option('newver'),
-        exclude: [
-          'dist/fonts',
-          'docs/assets',
-          'fonts',
-          'js/tests/vendor',
-          'node_modules',
-          'test-infra'
-        ],
-        recursive: true
+      version: {
+        pattern: '%VERSION%',
+        replacement: '<%= version %>',
+        recursive: true,
+        path: '<%= buildDir %>'
       }
     },
 
-    'saucelabs-qunit': {
-      all: {
-        options: {
-          build: process.env.TRAVIS_JOB_ID,
-          throttled: 10,
-          maxRetries: 3,
-          maxPollRetries: 4,
-          urls: ['http://127.0.0.1:3000/js/tests/index.html?hidepassed'],
-          browsers: grunt.file.readYAML('grunt/sauce_browsers.yml')
-        }
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc'
+      },
+      src: 'src/**/*.js',
+      test: ['test/**/*_spec.js', 'test/integration/test.js'],
+      gruntfile: ['Gruntfile.js']
+    },
+
+    watch: {
+      js: {
+        files: 'src/**/*',
+        tasks: 'build'
       }
     },
 
     exec: {
-      npmUpdate: {
-        command: 'npm update'
+      npm_publish: 'npm publish',
+      git_is_clean: 'test -z "$(git status --porcelain)"',
+      git_on_master: 'test $(git symbolic-ref --short -q HEAD) = master',
+      git_add: 'git add .',
+      git_push: 'git push && git push --tags',
+      git_commit: {
+        cmd: function(m) { return f('git commit -m "%s"', m); }
+      },
+      git_tag: {
+        cmd: function(v) { return f('git tag v%s -am "%s"', v, v); }
+      },
+      publish_assets: [
+        'cp -r <%= buildDir %> typeahead.js',
+        'zip -r typeahead.js/typeahead.js.zip typeahead.js',
+        'git checkout gh-pages',
+        'rm -rf releases/latest',
+        'cp -r typeahead.js releases/<%= version %>',
+        'cp -r typeahead.js releases/latest',
+        'git add releases/<%= version %> releases/latest',
+        'sed -E -i "" \'s/v[0-9]+\\.[0-9]+\\.[0-9]+/v<%= version %>/\' index.html',
+        'git add index.html',
+        'git commit -m "Add assets for <%= version %>."',
+        'git push',
+        'git checkout -',
+        'rm -rf typeahead.js'
+      ].join(' && ')
+    },
+
+    clean: {
+      dist: 'dist'
+    },
+
+    connect: {
+      server: {
+        options: { port: 8888, keepalive: true }
       }
     },
 
-    compress: {
-      main: {
-        options: {
-          archive: 'bootstrap-<%= pkg.version %>-dist.zip',
-          mode: 'zip',
-          level: 9,
-          pretty: true
-        },
-        files: [
-          {
-            expand: true,
-            cwd: 'dist/',
-            src: ['**'],
-            dest: 'bootstrap-<%= pkg.version %>-dist'
-          }
-        ]
+    concurrent: {
+      options: { logConcurrentOutput: true },
+      dev: ['server', 'watch']
+    },
+
+    step: {
+      options: {
+        option: false
       }
     }
-
   });
 
+  grunt.registerTask('release', '#shipit', function(version) {
+    var curVersion = grunt.config.get('version');
 
-  // These plugins provide necessary tasks.
-  require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
-  require('time-grunt')(grunt);
+    version = semver.inc(curVersion, version) || version;
 
-  // Docs HTML validation task
-  grunt.registerTask('validate-html', ['jekyll:docs', 'htmllint']);
+    if (!semver.valid(version) || semver.lte(version, curVersion)) {
+      grunt.fatal('hey dummy, that version is no good!');
+    }
 
-  var runSubset = function (subset) {
-    return !process.env.TWBS_TEST || process.env.TWBS_TEST === subset;
-  };
-  var isUndefOrNonZero = function (val) {
-    return val === undefined || val !== '0';
-  };
+    grunt.config.set('version', version);
 
-  // Test task.
-  var testSubtasks = [];
-  // Skip core tests if running a different subset of the test suite
-  if (runSubset('core') &&
-      // Skip core tests if this is a Savage build
-      process.env.TRAVIS_REPO_SLUG !== 'twbs-savage/bootstrap') {
-    testSubtasks = testSubtasks.concat(['dist-css', 'dist-js', 'csslint:dist', 'test-js', 'docs']);
-  }
-  // Skip HTML validation if running a different subset of the test suite
-  if (runSubset('validate-html') &&
-      // Skip HTML5 validator on Travis when [skip validator] is in the commit message
-      isUndefOrNonZero(process.env.TWBS_DO_VALIDATOR)) {
-    testSubtasks.push('validate-html');
-  }
-  // Only run Sauce Labs tests if there's a Sauce access key
-  if (typeof process.env.SAUCE_ACCESS_KEY !== 'undefined' &&
-      // Skip Sauce if running a different subset of the test suite
-      runSubset('sauce-js-unit') &&
-      // Skip Sauce on Travis when [skip sauce] is in the commit message
-      isUndefOrNonZero(process.env.TWBS_DO_SAUCE)) {
-    testSubtasks.push('connect');
-    testSubtasks.push('saucelabs-qunit');
-  }
-  grunt.registerTask('test', testSubtasks);
-  grunt.registerTask('test-js', ['jshint:core', 'jshint:test', 'jshint:grunt', 'jscs:core', 'jscs:test', 'jscs:grunt', 'qunit']);
-
-  // JS distribution task.
-  grunt.registerTask('dist-js', ['concat', 'uglify:core', 'commonjs']);
-
-  // CSS distribution task.
-  grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme']);
-  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme']);
-
-  // Full distribution task.
-  grunt.registerTask('dist', ['clean:dist', 'dist-css', 'copy:fonts', 'dist-js']);
-
-  // Default task.
-  grunt.registerTask('default', ['clean:dist', 'copy:fonts', 'test']);
-
-  // Version numbering task.
-  // grunt change-version-number --oldver=A.B.C --newver=X.Y.Z
-  // This can be overzealous, so its changes should always be manually reviewed!
-  grunt.registerTask('change-version-number', 'sed');
-
-  grunt.registerTask('build-glyphicons-data', function () { generateGlyphiconsData.call(this, grunt); });
-
-  // task for building customizer
-  grunt.registerTask('build-customizer', ['build-customizer-html', 'build-raw-files']);
-  grunt.registerTask('build-customizer-html', 'jade');
-  grunt.registerTask('build-raw-files', 'Add scripts/less files to customizer.', function () {
-    var banner = grunt.template.process('<%= banner %>');
-    generateRawFiles(grunt, banner);
+    grunt.task.run([
+      'exec:git_on_master',
+      'exec:git_is_clean',
+      f('step:Update to version %s?', version),
+      f('manifests:%s', version),
+      'build',
+      'exec:git_add',
+      f('exec:git_commit:%s', version),
+      f('exec:git_tag:%s', version),
+      'step:Push changes?',
+      'exec:git_push',
+      'step:Publish to npm?',
+      'exec:npm_publish',
+      'step:Publish assets?',
+      'exec:publish_assets'
+    ]);
   });
 
-  grunt.registerTask('commonjs', 'Generate CommonJS entrypoint module in dist dir.', function () {
-    var srcFiles = grunt.config.get('concat.bootstrap.src');
-    var destFilepath = 'dist/js/npm.js';
-    generateCommonJSModule(grunt, srcFiles, destFilepath);
+  grunt.registerTask('manifests', 'Update manifests.', function(version) {
+    var _ = grunt.util._,
+        pkg = grunt.file.readJSON('package.json'),
+        bower = grunt.file.readJSON('bower.json'),
+        jqueryPlugin = grunt.file.readJSON('typeahead.js.jquery.json');
+
+    bower = JSON.stringify(_.extend(bower, {
+      name: pkg.name,
+      version: version
+    }), null, 2);
+
+    jqueryPlugin = JSON.stringify(_.extend(jqueryPlugin, {
+      name: pkg.name,
+      title: pkg.name,
+      version: version,
+      author: pkg.author,
+      description: pkg.description,
+      keywords: pkg.keywords,
+      homepage: pkg.homepage,
+      bugs: pkg.bugs,
+      maintainers: pkg.contributors
+    }), null, 2);
+
+    pkg = JSON.stringify(_.extend(pkg, {
+      version: version
+    }), null, 2);
+
+    grunt.file.write('package.json', pkg);
+    grunt.file.write('bower.json', bower);
+    grunt.file.write('typeahead.js.jquery.json', jqueryPlugin);
   });
 
-  // Docs task.
-  grunt.registerTask('docs-css', ['autoprefixer:docs', 'autoprefixer:examples', 'csscomb:docs', 'csscomb:examples', 'cssmin:docs']);
-  grunt.registerTask('lint-docs-css', ['csslint:docs', 'csslint:examples']);
-  grunt.registerTask('docs-js', ['uglify:docsJs', 'uglify:customize']);
-  grunt.registerTask('lint-docs-js', ['jshint:assets', 'jscs:assets']);
-  grunt.registerTask('docs', ['docs-css', 'lint-docs-css', 'docs-js', 'lint-docs-js', 'clean:docs', 'copy:docs', 'build-glyphicons-data', 'build-customizer']);
+  // aliases
+  // -------
 
-  grunt.registerTask('prep-release', ['dist', 'docs', 'jekyll:github', 'htmlmin', 'compress']);
+  grunt.registerTask('default', 'build');
+  grunt.registerTask('server', 'connect:server');
+  grunt.registerTask('lint', 'jshint');
+  grunt.registerTask('dev', ['build', 'concurrent:dev']);
+  grunt.registerTask('build', [
+    'uglify:concatBloodhound',
+    'uglify:concatTypeahead',
+    'umd:bloodhound',
+    'umd:typeahead',
+    'uglify:bloodhound',
+    'uglify:bloodhoundMin',
+    'uglify:typeahead',
+    'uglify:typeaheadMin',
+    'uglify:bundle',
+    'uglify:bundleMin',
+    'sed:version'
+  ]);
 
-  // Task for updating the cached npm packages used by the Travis build (which are controlled by test-infra/npm-shrinkwrap.json).
-  // This task should be run and the updated file should be committed whenever Bootstrap's dependencies change.
-  grunt.registerTask('update-shrinkwrap', ['exec:npmUpdate', '_update-shrinkwrap']);
-  grunt.registerTask('_update-shrinkwrap', function () {
-    var done = this.async();
-    npmShrinkwrap({ dev: true, dirname: __dirname }, function (err) {
-      if (err) {
-        grunt.fail.warn(err);
-      }
-      var dest = 'test-infra/npm-shrinkwrap.json';
-      fs.renameSync('npm-shrinkwrap.json', dest);
-      grunt.log.writeln('File ' + dest.cyan + ' updated.');
-      done();
-    });
-  });
+  // load tasks
+  // ----------
+
+  grunt.loadNpmTasks('grunt-umd');
+  grunt.loadNpmTasks('grunt-sed');
+  grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-step');
+  grunt.loadNpmTasks('grunt-concurrent');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 };

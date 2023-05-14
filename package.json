@@ -1,112 +1,68 @@
 {
-  "name": "bootstrap",
-  "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
-  "version": "3.3.6",
+  "name": "typeahead.js",
+  "description": "fast and fully-featured autocomplete library",
   "keywords": [
-    "css",
-    "less",
-    "mobile-first",
-    "responsive",
-    "front-end",
-    "framework",
-    "web"
+    "typeahead",
+    "autocomplete"
   ],
-  "homepage": "http://getbootstrap.com",
-  "author": {
-    "name": "Twitter, Inc."
-  },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "style": "dist/css/bootstrap.css",
-  "less": "less/bootstrap.less",
-  "main": "./dist/js/npm",
+  "homepage": "http://twitter.github.com/typeahead.js",
+  "bugs": "https://github.com/twitter/typeahead.js/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/twbs/bootstrap.git"
+    "url": "https://github.com/twitter/typeahead.js.git"
   },
-  "bugs": {
-    "url": "https://github.com/twbs/bootstrap/issues"
+  "author": {
+    "name": "Twitter, Inc.",
+    "url": "https://twitter.com/twitteross"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "btoa": "~1.1.2",
-    "glob": "~6.0.1",
-    "grunt": "~0.4.5",
-    "grunt-autoprefixer": "~3.0.3",
-    "grunt-contrib-clean": "~0.6.0",
-    "grunt-contrib-compress": "~0.14.0",
-    "grunt-contrib-concat": "~0.5.1",
-    "grunt-contrib-connect": "~0.11.2",
-    "grunt-contrib-copy": "~0.8.0",
-    "grunt-contrib-csslint": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.14.0",
-    "grunt-contrib-htmlmin": "~0.6.0",
-    "grunt-contrib-jade": "~0.15.0",
-    "grunt-contrib-jshint": "~0.11.2",
-    "grunt-contrib-less": "~1.1.0",
-    "grunt-contrib-qunit": "~0.7.0",
-    "grunt-contrib-uglify": "~0.9.2",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-csscomb": "~3.1.0",
-    "grunt-exec": "~0.4.6",
-    "grunt-html": "~5.0.1",
-    "grunt-jekyll": "~0.4.2",
-    "grunt-jscs": "~2.3.0",
-    "grunt-saucelabs": "~8.6.1",
-    "grunt-sed": "github:twbs/grunt-sed#v0.2.0",
-    "load-grunt-tasks": "~3.3.0",
-    "markdown-it": "^5.0.0",
-    "npm-shrinkwrap": "^200.4.0",
-    "time-grunt": "^1.2.1"
-  },
-  "engines": {
-    "node": ">=0.10.1"
-  },
-  "files": [
-    "dist",
-    "fonts",
-    "grunt",
-    "js/*.js",
-    "less/**/*.less",
-    "Gruntfile.js",
-    "LICENSE"
-  ],
-  "jspm": {
-    "main": "js/bootstrap",
-    "shim": {
-      "js/bootstrap": {
-        "deps": "jquery",
-        "exports": "$"
-      }
-    },
-    "files": [
-      "css",
-      "fonts",
-      "js"
-    ]
-  },
-  "gitHead": "81df608a40bf0629a1dc08e584849bb1e43e0b7a",
-  "_id": "bootstrap@3.3.6",
-  "_shasum": "8de8f749dc8a743f2ac5b510d988371e3daa6589",
-  "_from": "bootstrap@latest",
-  "_npmVersion": "2.11.3",
-  "_nodeVersion": "0.12.7",
-  "_npmUser": {
-    "name": "twbs",
-    "email": "getbootstrap@gmail.com"
-  },
-  "dist": {
-    "shasum": "8de8f749dc8a743f2ac5b510d988371e3daa6589",
-    "tarball": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.6.tgz"
-  },
-  "maintainers": [
+  "contributors": [
     {
-      "name": "twbs",
-      "email": "bigj95t+bsnpm@gmail.com"
+      "name": "Jake Harding",
+      "url": "https://twitter.com/JakeHarding"
+    },
+    {
+      "name": "Tim Trueman",
+      "url": "https://twitter.com/timtrueman"
+    },
+    {
+      "name": "Veljko Skarich",
+      "url": "https://twitter.com/vskarich"
     }
   ],
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.6.tgz",
-  "readme": "ERROR: No README data found!"
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "colors": "^0.6.2",
+    "grunt": "~0.4",
+    "grunt-concurrent": "^0.5.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-concat": "~0.1",
+    "grunt-contrib-connect": "~0.1",
+    "grunt-contrib-jshint": "~0.8",
+    "grunt-contrib-uglify": "~0.2.6",
+    "grunt-contrib-watch": "~0.2",
+    "grunt-exec": "~0.4.5",
+    "grunt-sed": "~0.1",
+    "grunt-step": "~0.2.0",
+    "grunt-umd": "^2.3.3",
+    "karma": "^0.12.22",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-coverage": "^0.2.6",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-jasmine": "^0.1.5",
+    "karma-opera-launcher": "^0.1.0",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-safari-launcher": "^0.1.1",
+    "mocha": "^1.20.1",
+    "semver": "~1.1.3",
+    "underscore": "^1.6.0",
+    "yiewd": "^0.5.0"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+  },
+  "version": "0.11.1",
+  "main": "dist/typeahead.bundle.js"
 }
